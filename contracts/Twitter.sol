@@ -1,14 +1,17 @@
 // SPDX-License-Identifier: CC-PDDC
-pragma solidity ^0.8.12;
+pragma solidity ^0.8.13;
 
 import "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/LinkTokenInterface.sol";
-import "../interfaces/Registry.sol";
+import "./interfaces/Registry.sol";
+
+error ChainlinkOnly();
 
 contract Twitter is Registry, ChainlinkClient {
     using Chainlink for Chainlink.Request;
 
     // Temporary
+    address private link;
     uint256 private fee = 1**14; // 0.0001 LINK
     address private oracle = 0x2f90A6D021db21e1B2A077c5a37B3C7E75D15b7e;
     bytes32 private jobID = "29fa9aa13bf1468788b7cc4a500a45b8";
@@ -17,22 +20,31 @@ contract Twitter is Registry, ChainlinkClient {
     mapping(bytes32 => address) private records;
 
     // Mapping of proof Tweet ID to wallet address
-    mapping(address => uint128) private proofs;
+    mapping(address => bytes32) private proofs;
 
-    // Requires a Chainlink Oracle fee be paid
-    modifier oracleFee(uint256 price) {
-        require(
-            LinkTokenInterface(chainlinkTokenAddress()).transferFrom(
-                msg.sender,
-                address(this),
-                price
-            ),
-            "ERROR_ORACLE_FEE_NOT_PAID"
-        );
+    constructor(address _link) {
+        link = _link;
+    }
+
+    // Only the Chainlink Token can call these functions
+    modifier chainlink() {
+        if (msg.sender != link) revert ChainlinkOnly();
         _;
     }
 
-    function _sendChainlinkRequest(uint128 tweetID) private {
+    /// The data param should be the bytes32 packed Tweet ID
+    /// https://github.com/ethereum/EIPs/issues/677
+    /// @dev this function is called from the LINK Token contract transferAndCall() function
+    function onTokenTransfer(
+        address from,
+        uint256 amount,
+        bytes memory data
+    ) public chainlink returns (bool success) {
+        _sendChainlinkRequest(bytes32(data));
+        return true;
+    }
+
+    function _sendChainlinkRequest(bytes32 tweetID) private {
         Chainlink.Request memory request = buildChainlinkRequest(
             jobID,
             address(this),
@@ -44,8 +56,8 @@ contract Twitter is Registry, ChainlinkClient {
 
     /// Given an ID for a Tweet, triggers the Chainlink network to start verifying the account
     /// @param tweetID the ID of the Tweet to verify ownership of
-    function verify(bytes32 tweetID) external virtual override oracleFee(fee) {
-        _sendChainlinkRequest(uint128(uint256(tweetID)));
+    function verify(bytes32 tweetID) external virtual override {
+        _sendChainlinkRequest(tweetID);
     }
 
     /// Disputes a Twitter account that may have been deleted, privatized, or lost ownership
@@ -59,7 +71,7 @@ contract Twitter is Registry, ChainlinkClient {
     function fulfill(
         bytes32 _requestId,
         bytes32 _twitterHandle,
-        uint128 _proof,
+        bytes32 _proof,
         address _address
     ) external recordChainlinkFulfillment(_requestId) {
         // Protect against malicious callers
