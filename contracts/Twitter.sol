@@ -19,8 +19,10 @@ contract Twitter is Registry, ChainlinkClient {
     // Mapping of Twitter handle to wallet address
     mapping(bytes32 => address) private records;
 
-    // Mapping of proof Tweet ID to wallet address
-    mapping(address => bytes32) private proofs;
+    // Mapping of Chainlink request ID to address
+    mapping(bytes32 => address) private requestToAddress;
+    // Mapping of Chainlink request ID to Twitter handle
+    mapping(bytes32 => bytes32) private requestToHandle;
 
     constructor(address _link) {
         link = _link;
@@ -32,7 +34,7 @@ contract Twitter is Registry, ChainlinkClient {
         _;
     }
 
-    /// The data param should be the bytes32 packed Tweet ID
+    /// The data param should be the Tweet ID
     /// https://github.com/ethereum/EIPs/issues/677
     /// @dev this function is called from the LINK Token contract transferAndCall() function
     function onTokenTransfer(
@@ -41,51 +43,35 @@ contract Twitter is Registry, ChainlinkClient {
         bytes memory data
     ) public chainlink returns (bool success) {
         _sendChainlinkRequest(bytes32(data));
-        return true;
-    }
-
-    function _sendChainlinkRequest(bytes32 tweetID) private {
         Chainlink.Request memory request = buildChainlinkRequest(
             jobID,
             address(this),
             this.fulfill.selector
         );
-        request.addUint("tweetID", uint256(tweetID));
-        sendChainlinkRequestTo(oracle, request, fee);
-    }
+        request.add("tweetID", tweetID);
+        requestId = sendChainlinkRequestTo(oracle, request, fee);
+        requestToHandle[requestId] = tweedID;
 
-    /// Given an ID for a Tweet, triggers the Chainlink network to start verifying the account
-    /// @param tweetID the ID of the Tweet to verify ownership of
-    function verify(bytes32 tweetID) external virtual override {
-        _sendChainlinkRequest(tweetID);
-    }
-
-    /// Disputes a Twitter account that may have been deleted, privatized, or lost ownership
-    /// @param twitterHandle the Twitter handle that is being disputed
-    function dispute(bytes32 twitterHandle) external virtual override {
-        _sendChainlinkRequest(proofs[records[twitterHandle]]);
+        return true;
     }
 
     /// Chainlink Oracle fulfiller which sets the record owner address to the verified user or 0x0
     /// @dev this method is only called by the Oracle contract
-    function fulfill(
-        bytes32 _requestId,
-        bytes32 _twitterHandle,
-        bytes32 _proof,
-        address _address
-    ) external recordChainlinkFulfillment(_requestId) {
-        // Protect against malicious callers
-        validateChainlinkCallback(_requestId);
+    function fulfill(bytes32 _requestId, bytes32 _twitterHandle)
+        external
+        recordChainlinkFulfillment(_requestId)
+    {
+        // Fulfillment data is broken up as follows:
+        // 0x0000000000000000000000000000000000000000000000000000000000000000
+        //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                                 - (16 bytes) Twitter handle
+        //                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ - (20 bytes) Address
 
         // Set the verification status (sets to address(0) if verification failed)
         records[_twitterHandle] = _address;
 
-        // Set the proof Tweet ID to allow disputes to be filed
-        proofs[_address] = _proof;
-
         emit VerificationSuccessful(
             _address,
-            bytes32(uint256(_proof)),
+            bytes32(uint256(_proofTweetId)),
             _twitterHandle
         );
     }
@@ -98,7 +84,7 @@ contract Twitter is Registry, ChainlinkClient {
         view
         virtual
         override
-        returns (address)
+        returns (address ownerAddress)
     {
         return records[twitterHandle];
     }

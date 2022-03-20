@@ -7,7 +7,6 @@ import "hardhat-contract-sizer";
 import "hardhat-deploy";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
-import "./tasks";
 
 require("dotenv").config();
 
@@ -32,15 +31,7 @@ const REPORT_GAS: boolean = process.env.REPORT_GAS === "true" || false;
 module.exports = {
   defaultNetwork: "hardhat",
   networks: {
-    hardhat: {
-      // If you want to do some forking set `enabled` to true
-      forking: {
-        url: MAINNET_RPC_URL,
-        blockNumber: FORKING_BLOCK_NUMBER,
-        enabled: false,
-      },
-      chainId: 31337,
-    },
+    hardhat: {},
     localhost: {
       chainId: 31337,
     },
