@@ -20,10 +20,6 @@ const RINKEBY_RPC_URL: string = process.env.RINKEBY_RPC_URL!;
 const KOVAN_RPC_URL: string = process.env.KOVAN_RPC_URL!;
 const PRIVATE_KEY: string = process.env.PRIVATE_KEY!;
 
-// The mainnet block number to fork from
-const FORKING_BLOCK_NUMBER: string =
-  process.env.FORKING_BLOCK_NUMBER || String(0);
-
 // Your API key for Etherscan, obtain one at https://etherscan.io/
 const ETHERSCAN_API_KEY: string = process.env.ETHERSCAN_API_KEY!;
 const REPORT_GAS: boolean = process.env.REPORT_GAS === "true" || false;

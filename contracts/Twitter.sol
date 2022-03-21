@@ -3,11 +3,12 @@ pragma solidity ^0.8.13;
 
 import "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/LinkTokenInterface.sol";
-import "./interfaces/Registry.sol";
+// import "./interfaces/Registry.sol";
 
 error ChainlinkOnly();
+error FeeTooLow();
 
-contract Twitter is Registry, ChainlinkClient {
+contract Twitter is ChainlinkClient {
     using Chainlink for Chainlink.Request;
 
     // Temporary
@@ -19,71 +20,57 @@ contract Twitter is Registry, ChainlinkClient {
     // Mapping of Twitter handle to wallet address
     mapping(bytes32 => address) private records;
 
-    // Mapping of Chainlink request ID to address
-    mapping(bytes32 => address) private requestToAddress;
-    // Mapping of Chainlink request ID to Twitter handle
-    mapping(bytes32 => bytes32) private requestToHandle;
-
-    constructor(address _link) {
-        link = _link;
+    constructor(address link, address oracle) {
+        setChainlinkToken(link);
+        setChainlinkOracle(oracle);
     }
 
-    // Only the Chainlink Token can call these functions
+    // Only the Chainlink Token contract can call these functions
     modifier chainlink() {
-        if (msg.sender != link) revert ChainlinkOnly();
+        if (msg.sender != chainlinkTokenAddress()) revert ChainlinkOnly();
         _;
     }
 
     /// The data param should be the Tweet ID
     /// https://github.com/ethereum/EIPs/issues/677
-    /// @dev this function is called from the LINK Token contract transferAndCall() function
+    /// @dev This function is called from the LINK Token contract transferAndCall() function
     function onTokenTransfer(
         address from,
         uint256 amount,
         bytes memory data
     ) public chainlink returns (bool success) {
-        _sendChainlinkRequest(bytes32(data));
+        if (amount < fee) revert FeeTooLow();
+
+        // Create a Chainlink request with the Tweet ID to verify
         Chainlink.Request memory request = buildChainlinkRequest(
             jobID,
             address(this),
             this.fulfill.selector
         );
-        request.add("tweetID", tweetID);
-        requestId = sendChainlinkRequestTo(oracle, request, fee);
-        requestToHandle[requestId] = tweedID;
+        request.addBytes("tweetID", data);
+        sendChainlinkRequestTo(request, fee);
 
         return true;
     }
 
     /// Chainlink Oracle fulfiller which sets the record owner address to the verified user or 0x0
     /// @dev this method is only called by the Oracle contract
-    function fulfill(bytes32 _requestId, bytes32 _twitterHandle)
-        external
-        recordChainlinkFulfillment(_requestId)
-    {
-        // Fulfillment data is broken up as follows:
-        // 0x0000000000000000000000000000000000000000000000000000000000000000
-        //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                                 - (16 bytes) Twitter handle
-        //                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ - (20 bytes) Address
-
+    function fulfill(
+        bytes32 _requestId,
+        bytes32 _twitterHandle,
+        address _address
+    ) external recordChainlinkFulfillment(_requestId) {
         // Set the verification status (sets to address(0) if verification failed)
         records[_twitterHandle] = _address;
-
-        emit VerificationSuccessful(
-            _address,
-            bytes32(uint256(_proofTweetId)),
-            _twitterHandle
-        );
     }
 
     /// Resolves a Twitter handle to a wallet address
-    /// @param twitterHandle the Twitter @ username to resolve
-    /// @return 0x0 if the handle is not connected or the owner's address if it is connected
+    /// @param twitterHandle The Twitter @ username to resolve
+    /// @return ownerAddress Returns the null address if the handle is not connected or the owner's address if it is connected
     function resolve(bytes32 twitterHandle)
         external
         view
         virtual
-        override
         returns (address ownerAddress)
     {
         return records[twitterHandle];

@@ -1,0 +1,933 @@
+{
+  "id": "964989afcde47de6ebe2b310cf227e4e",
+  "_format": "hh-sol-build-info-1",
+  "solcVersion": "0.8.13",
+  "solcLongVersion": "0.8.13+commit.abaa5c0e",
+  "input": {
+    "language": "Solidity",
+    "sources": {
+      "contracts/interfaces/Registry.sol": {
+        "content": "// SPDX-License-Identifier: CC-PDDC\npragma solidity ^0.8.0;\n\n/// @title Aces and Eights Registry Interface\n/// @author hexcowboy <cowboy.dev>\ninterface Registry {\n    /// Logged when an account has requested verification\n    /// @param owner the address of the owner that was verified\n    /// @param (2) the account ID, username, or unique identifier of the verified account\n    /// @param (3) the address of the owner that was verified\n    event Verify(address indexed owner, bytes32 indexed, bytes32);\n\n    /// Logged when an account has requested verification\n    /// @param owner the address of the owner that was verified\n    /// @param proof the proof document that was submitted\n    ///  Examples include:\n    ///   - Twitter: The ID of the Tweet submitted for proof\n    /// @param (3) the identity that was linked to the owner\n    ///  Examples include:\n    ///   - Twitter: The @ username of the owner\n    event VerificationSuccessful(\n        address indexed owner,\n        bytes32 indexed proof,\n        bytes32\n    );\n\n    /// Logged when someone disputes the ownership of an address's connected account\n    /// @param owner the address of the owner being disputed\n    /// @param (2) the account ID, username, or unique identifier of the account being disputed\n    event Dispute(address indexed owner, bytes32 indexed);\n\n    /// Logged when the dispute has been deemed successful by the Chainlink network\n    /// @param owner the address of the owner disputed\n    /// @param (2) the account ID, username, or unique identifier of the account disputed\n    event DisputeSuccessful(address indexed owner, bytes32 indexed);\n\n    /// Given data, the Chainlink network should be able to use it to verify an external account.\n    /// @param (1) the object data to verify\n    ///  Examples include:\n    ///   - Twitter: The ID of the Tweet\n    ///   - Instagram: The alphanumeric post ID\n    /// @notice check your registry's implementation to understand what kind of data to pass as parameters\n    function verify(bytes32) external;\n\n    /// A connection can be disputed if the caller pays the Chainlink network to audit it.\n    ///  Cases include:\n    ///   - An account is banned\n    ///   - An account removes their verification post\n    ///   - An account's name has changed\n    /// @param (1) the account ID, username, or unique identifier that is being disputed\n    /// @notice check your registry's implementation to understand what kind of data to pass as parameters\n    function dispute(bytes32) external;\n\n    /// Resolves a record to a wallet (or contract) address\n    /// @param (1) the identifier to verify\n    ///  Examples include:\n    ///   - The username of a verified account\n    function resolve(bytes32) external view returns (address);\n}\n"
+      }
+    },
+    "settings": {
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata",
+            "devdoc",
+            "userdoc",
+            "storageLayout",
+            "evm.gasEstimates"
+          ],
+          "": [
+            "ast"
+          ]
+        }
+      },
+      "metadata": {
+        "useLiteralContent": true
+      }
+    }
+  },
+  "output": {
+    "contracts": {
+      "contracts/interfaces/Registry.sol": {
+        "Registry": {
+          "abi": [
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "owner",
+                  "type": "address"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "bytes32",
+                  "name": "",
+                  "type": "bytes32"
+                }
+              ],
+              "name": "Dispute",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "owner",
+                  "type": "address"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "bytes32",
+                  "name": "",
+                  "type": "bytes32"
+                }
+              ],
+              "name": "DisputeSuccessful",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "owner",
+                  "type": "address"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "bytes32",
+                  "name": "proof",
+                  "type": "bytes32"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "bytes32",
+                  "name": "",
+                  "type": "bytes32"
+                }
+              ],
+              "name": "VerificationSuccessful",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "owner",
+                  "type": "address"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "bytes32",
+                  "name": "",
+                  "type": "bytes32"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "bytes32",
+                  "name": "",
+                  "type": "bytes32"
+                }
+              ],
+              "name": "Verify",
+              "type": "event"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "bytes32",
+                  "name": "",
+                  "type": "bytes32"
+                }
+              ],
+              "name": "dispute",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "bytes32",
+                  "name": "",
+                  "type": "bytes32"
+                }
+              ],
+              "name": "resolve",
+              "outputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "bytes32",
+                  "name": "",
+                  "type": "bytes32"
+                }
+              ],
+              "name": "verify",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            }
+          ],
+          "devdoc": {
+            "author": "hexcowboy <cowboy.dev>",
+            "events": {
+              "Dispute(address,bytes32)": {
+                "params": {
+                  "": "(2) the account ID, username, or unique identifier of the account being disputed",
+                  "owner": "the address of the owner being disputed"
+                }
+              },
+              "DisputeSuccessful(address,bytes32)": {
+                "params": {
+                  "": "(2) the account ID, username, or unique identifier of the account disputed",
+                  "owner": "the address of the owner disputed"
+                }
+              },
+              "VerificationSuccessful(address,bytes32,bytes32)": {
+                "params": {
+                  "": "(3) the identity that was linked to the owner  Examples include: username of the owner",
+                  "owner": "the address of the owner that was verified",
+                  "proof": "the proof document that was submitted  Examples include:   - Twitter: The ID of the Tweet submitted for proof"
+                }
+              },
+              "Verify(address,bytes32,bytes32)": {
+                "params": {
+                  "": "(3) the address of the owner that was verified",
+                  "owner": "the address of the owner that was verified"
+                }
+              }
+            },
+            "kind": "dev",
+            "methods": {
+              "dispute(bytes32)": {
+                "params": {
+                  "": "(1) the account ID, username, or unique identifier that is being disputed"
+                }
+              },
+              "resolve(bytes32)": {
+                "params": {
+                  "": "(1) the identifier to verify  Examples include:   - The username of a verified account"
+                }
+              },
+              "verify(bytes32)": {
+                "params": {
+                  "": "(1) the object data to verify  Examples include:   - Twitter: The ID of the Tweet   - Instagram: The alphanumeric post ID"
+                }
+              }
+            },
+            "title": "Aces and Eights Registry Interface",
+            "version": 1
+          },
+          "evm": {
+            "bytecode": {
+              "functionDebugData": {},
+              "generatedSources": [],
+              "linkReferences": {},
+              "object": "",
+              "opcodes": "",
+              "sourceMap": ""
+            },
+            "deployedBytecode": {
+              "functionDebugData": {},
+              "generatedSources": [],
+              "immutableReferences": {},
+              "linkReferences": {},
+              "object": "",
+              "opcodes": "",
+              "sourceMap": ""
+            },
+            "gasEstimates": null,
+            "methodIdentifiers": {
+              "dispute(bytes32)": "add98c70",
+              "resolve(bytes32)": "5c23bdf5",
+              "verify(bytes32)": "75e36616"
+            }
+          },
+          "metadata": "{\"compiler\":{\"version\":\"0.8.13+commit.abaa5c0e\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"Dispute\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"DisputeSuccessful\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"proof\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"VerificationSuccessful\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"Verify\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"dispute\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"resolve\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"verify\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"author\":\"hexcowboy <cowboy.dev>\",\"events\":{\"Dispute(address,bytes32)\":{\"params\":{\"\":\"(2) the account ID, username, or unique identifier of the account being disputed\",\"owner\":\"the address of the owner being disputed\"}},\"DisputeSuccessful(address,bytes32)\":{\"params\":{\"\":\"(2) the account ID, username, or unique identifier of the account disputed\",\"owner\":\"the address of the owner disputed\"}},\"VerificationSuccessful(address,bytes32,bytes32)\":{\"params\":{\"\":\"(3) the identity that was linked to the owner  Examples include: username of the owner\",\"owner\":\"the address of the owner that was verified\",\"proof\":\"the proof document that was submitted  Examples include:   - Twitter: The ID of the Tweet submitted for proof\"}},\"Verify(address,bytes32,bytes32)\":{\"params\":{\"\":\"(3) the address of the owner that was verified\",\"owner\":\"the address of the owner that was verified\"}}},\"kind\":\"dev\",\"methods\":{\"dispute(bytes32)\":{\"params\":{\"\":\"(1) the account ID, username, or unique identifier that is being disputed\"}},\"resolve(bytes32)\":{\"params\":{\"\":\"(1) the identifier to verify  Examples include:   - The username of a verified account\"}},\"verify(bytes32)\":{\"params\":{\"\":\"(1) the object data to verify  Examples include:   - Twitter: The ID of the Tweet   - Instagram: The alphanumeric post ID\"}}},\"title\":\"Aces and Eights Registry Interface\",\"version\":1},\"userdoc\":{\"events\":{\"Dispute(address,bytes32)\":{\"notice\":\"Logged when someone disputes the ownership of an address's connected account\"},\"DisputeSuccessful(address,bytes32)\":{\"notice\":\"Logged when the dispute has been deemed successful by the Chainlink network\"},\"VerificationSuccessful(address,bytes32,bytes32)\":{\"notice\":\"Logged when an account has requested verification\"},\"Verify(address,bytes32,bytes32)\":{\"notice\":\"Logged when an account has requested verification\"}},\"kind\":\"user\",\"methods\":{\"dispute(bytes32)\":{\"notice\":\"A connection can be disputed if the caller pays the Chainlink network to audit it.  Cases include:   - An account is banned   - An account removes their verification post   - An account's name has changedcheck your registry's implementation to understand what kind of data to pass as parameters\"},\"resolve(bytes32)\":{\"notice\":\"Resolves a record to a wallet (or contract) address\"},\"verify(bytes32)\":{\"notice\":\"Given data, the Chainlink network should be able to use it to verify an external account.check your registry's implementation to understand what kind of data to pass as parameters\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/interfaces/Registry.sol\":\"Registry\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/interfaces/Registry.sol\":{\"content\":\"// SPDX-License-Identifier: CC-PDDC\\npragma solidity ^0.8.0;\\n\\n/// @title Aces and Eights Registry Interface\\n/// @author hexcowboy <cowboy.dev>\\ninterface Registry {\\n    /// Logged when an account has requested verification\\n    /// @param owner the address of the owner that was verified\\n    /// @param (2) the account ID, username, or unique identifier of the verified account\\n    /// @param (3) the address of the owner that was verified\\n    event Verify(address indexed owner, bytes32 indexed, bytes32);\\n\\n    /// Logged when an account has requested verification\\n    /// @param owner the address of the owner that was verified\\n    /// @param proof the proof document that was submitted\\n    ///  Examples include:\\n    ///   - Twitter: The ID of the Tweet submitted for proof\\n    /// @param (3) the identity that was linked to the owner\\n    ///  Examples include:\\n    ///   - Twitter: The @ username of the owner\\n    event VerificationSuccessful(\\n        address indexed owner,\\n        bytes32 indexed proof,\\n        bytes32\\n    );\\n\\n    /// Logged when someone disputes the ownership of an address's connected account\\n    /// @param owner the address of the owner being disputed\\n    /// @param (2) the account ID, username, or unique identifier of the account being disputed\\n    event Dispute(address indexed owner, bytes32 indexed);\\n\\n    /// Logged when the dispute has been deemed successful by the Chainlink network\\n    /// @param owner the address of the owner disputed\\n    /// @param (2) the account ID, username, or unique identifier of the account disputed\\n    event DisputeSuccessful(address indexed owner, bytes32 indexed);\\n\\n    /// Given data, the Chainlink network should be able to use it to verify an external account.\\n    /// @param (1) the object data to verify\\n    ///  Examples include:\\n    ///   - Twitter: The ID of the Tweet\\n    ///   - Instagram: The alphanumeric post ID\\n    /// @notice check your registry's implementation to understand what kind of data to pass as parameters\\n    function verify(bytes32) external;\\n\\n    /// A connection can be disputed if the caller pays the Chainlink network to audit it.\\n    ///  Cases include:\\n    ///   - An account is banned\\n    ///   - An account removes their verification post\\n    ///   - An account's name has changed\\n    /// @param (1) the account ID, username, or unique identifier that is being disputed\\n    /// @notice check your registry's implementation to understand what kind of data to pass as parameters\\n    function dispute(bytes32) external;\\n\\n    /// Resolves a record to a wallet (or contract) address\\n    /// @param (1) the identifier to verify\\n    ///  Examples include:\\n    ///   - The username of a verified account\\n    function resolve(bytes32) external view returns (address);\\n}\\n\",\"keccak256\":\"0xd7586c48feb27ee1a8437cd4e6344b2a22d19f2b36664d5cb5c286086172a161\",\"license\":\"CC-PDDC\"}},\"version\":1}",
+          "storageLayout": {
+            "storage": [],
+            "types": null
+          },
+          "userdoc": {
+            "events": {
+              "Dispute(address,bytes32)": {
+                "notice": "Logged when someone disputes the ownership of an address's connected account"
+              },
+              "DisputeSuccessful(address,bytes32)": {
+                "notice": "Logged when the dispute has been deemed successful by the Chainlink network"
+              },
+              "VerificationSuccessful(address,bytes32,bytes32)": {
+                "notice": "Logged when an account has requested verification"
+              },
+              "Verify(address,bytes32,bytes32)": {
+                "notice": "Logged when an account has requested verification"
+              }
+            },
+            "kind": "user",
+            "methods": {
+              "dispute(bytes32)": {
+                "notice": "A connection can be disputed if the caller pays the Chainlink network to audit it.  Cases include:   - An account is banned   - An account removes their verification post   - An account's name has changedcheck your registry's implementation to understand what kind of data to pass as parameters"
+              },
+              "resolve(bytes32)": {
+                "notice": "Resolves a record to a wallet (or contract) address"
+              },
+              "verify(bytes32)": {
+                "notice": "Given data, the Chainlink network should be able to use it to verify an external account.check your registry's implementation to understand what kind of data to pass as parameters"
+              }
+            },
+            "version": 1
+          }
+        }
+      }
+    },
+    "sources": {
+      "contracts/interfaces/Registry.sol": {
+        "ast": {
+          "absolutePath": "contracts/interfaces/Registry.sol",
+          "exportedSymbols": {
+            "Registry": [
+              55
+            ]
+          },
+          "id": 56,
+          "license": "CC-PDDC",
+          "nodeType": "SourceUnit",
+          "nodes": [
+            {
+              "id": 1,
+              "literals": [
+                "solidity",
+                "^",
+                "0.8",
+                ".0"
+              ],
+              "nodeType": "PragmaDirective",
+              "src": "36:23:0"
+            },
+            {
+              "abstract": false,
+              "baseContracts": [],
+              "canonicalName": "Registry",
+              "contractDependencies": [],
+              "contractKind": "interface",
+              "documentation": {
+                "id": 2,
+                "nodeType": "StructuredDocumentation",
+                "src": "61:81:0",
+                "text": "@title Aces and Eights Registry Interface\n @author hexcowboy <cowboy.dev>"
+              },
+              "fullyImplemented": false,
+              "id": 55,
+              "linearizedBaseContracts": [
+                55
+              ],
+              "name": "Registry",
+              "nameLocation": "152:8:0",
+              "nodeType": "ContractDefinition",
+              "nodes": [
+                {
+                  "anonymous": false,
+                  "documentation": {
+                    "id": 3,
+                    "nodeType": "StructuredDocumentation",
+                    "src": "167:269:0",
+                    "text": "Logged when an account has requested verification\n @param owner the address of the owner that was verified\n @param (2) the account ID, username, or unique identifier of the verified account\n @param (3) the address of the owner that was verified"
+                  },
+                  "eventSelector": "30550718f3b2ed220607383a3d9af2e865d4d1815b2a5d3c8c02814dd48d7f27",
+                  "id": 11,
+                  "name": "Verify",
+                  "nameLocation": "447:6:0",
+                  "nodeType": "EventDefinition",
+                  "parameters": {
+                    "id": 10,
+                    "nodeType": "ParameterList",
+                    "parameters": [
+                      {
+                        "constant": false,
+                        "id": 5,
+                        "indexed": true,
+                        "mutability": "mutable",
+                        "name": "owner",
+                        "nameLocation": "470:5:0",
+                        "nodeType": "VariableDeclaration",
+                        "scope": 11,
+                        "src": "454:21:0",
+                        "stateVariable": false,
+                        "storageLocation": "default",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        },
+                        "typeName": {
+                          "id": 4,
+                          "name": "address",
+                          "nodeType": "ElementaryTypeName",
+                          "src": "454:7:0",
+                          "stateMutability": "nonpayable",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_address",
+                            "typeString": "address"
+                          }
+                        },
+                        "visibility": "internal"
+                      },
+                      {
+                        "constant": false,
+                        "id": 7,
+                        "indexed": true,
+                        "mutability": "mutable",
+                        "name": "",
+                        "nameLocation": "-1:-1:-1",
+                        "nodeType": "VariableDeclaration",
+                        "scope": 11,
+                        "src": "477:15:0",
+                        "stateVariable": false,
+                        "storageLocation": "default",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        },
+                        "typeName": {
+                          "id": 6,
+                          "name": "bytes32",
+                          "nodeType": "ElementaryTypeName",
+                          "src": "477:7:0",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        },
+                        "visibility": "internal"
+                      },
+                      {
+                        "constant": false,
+                        "id": 9,
+                        "indexed": false,
+                        "mutability": "mutable",
+                        "name": "",
+                        "nameLocation": "-1:-1:-1",
+                        "nodeType": "VariableDeclaration",
+                        "scope": 11,
+                        "src": "494:7:0",
+                        "stateVariable": false,
+                        "storageLocation": "default",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        },
+                        "typeName": {
+                          "id": 8,
+                          "name": "bytes32",
+                          "nodeType": "ElementaryTypeName",
+                          "src": "494:7:0",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        },
+                        "visibility": "internal"
+                      }
+                    ],
+                    "src": "453:49:0"
+                  },
+                  "src": "441:62:0"
+                },
+                {
+                  "anonymous": false,
+                  "documentation": {
+                    "id": 12,
+                    "nodeType": "StructuredDocumentation",
+                    "src": "509:401:0",
+                    "text": "Logged when an account has requested verification\n @param owner the address of the owner that was verified\n @param proof the proof document that was submitted\n  Examples include:\n   - Twitter: The ID of the Tweet submitted for proof\n @param (3) the identity that was linked to the owner\n  Examples include:\n   - Twitter: The @ username of the owner"
+                  },
+                  "eventSelector": "6d202f7481504ecd9a5368dde9c416dad124f7d3720bd2d9447d1e07f278d763",
+                  "id": 20,
+                  "name": "VerificationSuccessful",
+                  "nameLocation": "921:22:0",
+                  "nodeType": "EventDefinition",
+                  "parameters": {
+                    "id": 19,
+                    "nodeType": "ParameterList",
+                    "parameters": [
+                      {
+                        "constant": false,
+                        "id": 14,
+                        "indexed": true,
+                        "mutability": "mutable",
+                        "name": "owner",
+                        "nameLocation": "969:5:0",
+                        "nodeType": "VariableDeclaration",
+                        "scope": 20,
+                        "src": "953:21:0",
+                        "stateVariable": false,
+                        "storageLocation": "default",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        },
+                        "typeName": {
+                          "id": 13,
+                          "name": "address",
+                          "nodeType": "ElementaryTypeName",
+                          "src": "953:7:0",
+                          "stateMutability": "nonpayable",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_address",
+                            "typeString": "address"
+                          }
+                        },
+                        "visibility": "internal"
+                      },
+                      {
+                        "constant": false,
+                        "id": 16,
+                        "indexed": true,
+                        "mutability": "mutable",
+                        "name": "proof",
+                        "nameLocation": "1000:5:0",
+                        "nodeType": "VariableDeclaration",
+                        "scope": 20,
+                        "src": "984:21:0",
+                        "stateVariable": false,
+                        "storageLocation": "default",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        },
+                        "typeName": {
+                          "id": 15,
+                          "name": "bytes32",
+                          "nodeType": "ElementaryTypeName",
+                          "src": "984:7:0",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        },
+                        "visibility": "internal"
+                      },
+                      {
+                        "constant": false,
+                        "id": 18,
+                        "indexed": false,
+                        "mutability": "mutable",
+                        "name": "",
+                        "nameLocation": "-1:-1:-1",
+                        "nodeType": "VariableDeclaration",
+                        "scope": 20,
+                        "src": "1015:7:0",
+                        "stateVariable": false,
+                        "storageLocation": "default",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        },
+                        "typeName": {
+                          "id": 17,
+                          "name": "bytes32",
+                          "nodeType": "ElementaryTypeName",
+                          "src": "1015:7:0",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        },
+                        "visibility": "internal"
+                      }
+                    ],
+                    "src": "943:85:0"
+                  },
+                  "src": "915:114:0"
+                },
+                {
+                  "anonymous": false,
+                  "documentation": {
+                    "id": 21,
+                    "nodeType": "StructuredDocumentation",
+                    "src": "1035:237:0",
+                    "text": "Logged when someone disputes the ownership of an address's connected account\n @param owner the address of the owner being disputed\n @param (2) the account ID, username, or unique identifier of the account being disputed"
+                  },
+                  "eventSelector": "5f9f68c2c12c510a24e30c7a0946f7cbbf95d04ae68d51487f758d55c1c3b7d0",
+                  "id": 27,
+                  "name": "Dispute",
+                  "nameLocation": "1283:7:0",
+                  "nodeType": "EventDefinition",
+                  "parameters": {
+                    "id": 26,
+                    "nodeType": "ParameterList",
+                    "parameters": [
+                      {
+                        "constant": false,
+                        "id": 23,
+                        "indexed": true,
+                        "mutability": "mutable",
+                        "name": "owner",
+                        "nameLocation": "1307:5:0",
+                        "nodeType": "VariableDeclaration",
+                        "scope": 27,
+                        "src": "1291:21:0",
+                        "stateVariable": false,
+                        "storageLocation": "default",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        },
+                        "typeName": {
+                          "id": 22,
+                          "name": "address",
+                          "nodeType": "ElementaryTypeName",
+                          "src": "1291:7:0",
+                          "stateMutability": "nonpayable",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_address",
+                            "typeString": "address"
+                          }
+                        },
+                        "visibility": "internal"
+                      },
+                      {
+                        "constant": false,
+                        "id": 25,
+                        "indexed": true,
+                        "mutability": "mutable",
+                        "name": "",
+                        "nameLocation": "-1:-1:-1",
+                        "nodeType": "VariableDeclaration",
+                        "scope": 27,
+                        "src": "1314:15:0",
+                        "stateVariable": false,
+                        "storageLocation": "default",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        },
+                        "typeName": {
+                          "id": 24,
+                          "name": "bytes32",
+                          "nodeType": "ElementaryTypeName",
+                          "src": "1314:7:0",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        },
+                        "visibility": "internal"
+                      }
+                    ],
+                    "src": "1290:40:0"
+                  },
+                  "src": "1277:54:0"
+                },
+                {
+                  "anonymous": false,
+                  "documentation": {
+                    "id": 28,
+                    "nodeType": "StructuredDocumentation",
+                    "src": "1337:224:0",
+                    "text": "Logged when the dispute has been deemed successful by the Chainlink network\n @param owner the address of the owner disputed\n @param (2) the account ID, username, or unique identifier of the account disputed"
+                  },
+                  "eventSelector": "a73531ef5b111a83356ef65d863be78f863913c7679db38b9c27416fd633b351",
+                  "id": 34,
+                  "name": "DisputeSuccessful",
+                  "nameLocation": "1572:17:0",
+                  "nodeType": "EventDefinition",
+                  "parameters": {
+                    "id": 33,
+                    "nodeType": "ParameterList",
+                    "parameters": [
+                      {
+                        "constant": false,
+                        "id": 30,
+                        "indexed": true,
+                        "mutability": "mutable",
+                        "name": "owner",
+                        "nameLocation": "1606:5:0",
+                        "nodeType": "VariableDeclaration",
+                        "scope": 34,
+                        "src": "1590:21:0",
+                        "stateVariable": false,
+                        "storageLocation": "default",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        },
+                        "typeName": {
+                          "id": 29,
+                          "name": "address",
+                          "nodeType": "ElementaryTypeName",
+                          "src": "1590:7:0",
+                          "stateMutability": "nonpayable",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_address",
+                            "typeString": "address"
+                          }
+                        },
+                        "visibility": "internal"
+                      },
+                      {
+                        "constant": false,
+                        "id": 32,
+                        "indexed": true,
+                        "mutability": "mutable",
+                        "name": "",
+                        "nameLocation": "-1:-1:-1",
+                        "nodeType": "VariableDeclaration",
+                        "scope": 34,
+                        "src": "1613:15:0",
+                        "stateVariable": false,
+                        "storageLocation": "default",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        },
+                        "typeName": {
+                          "id": 31,
+                          "name": "bytes32",
+                          "nodeType": "ElementaryTypeName",
+                          "src": "1613:7:0",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        },
+                        "visibility": "internal"
+                      }
+                    ],
+                    "src": "1589:40:0"
+                  },
+                  "src": "1566:64:0"
+                },
+                {
+                  "documentation": {
+                    "id": 35,
+                    "nodeType": "StructuredDocumentation",
+                    "src": "1636:361:0",
+                    "text": "Given data, the Chainlink network should be able to use it to verify an external account.\n @param (1) the object data to verify\n  Examples include:\n   - Twitter: The ID of the Tweet\n   - Instagram: The alphanumeric post ID\n @notice check your registry's implementation to understand what kind of data to pass as parameters"
+                  },
+                  "functionSelector": "75e36616",
+                  "id": 40,
+                  "implemented": false,
+                  "kind": "function",
+                  "modifiers": [],
+                  "name": "verify",
+                  "nameLocation": "2011:6:0",
+                  "nodeType": "FunctionDefinition",
+                  "parameters": {
+                    "id": 38,
+                    "nodeType": "ParameterList",
+                    "parameters": [
+                      {
+                        "constant": false,
+                        "id": 37,
+                        "mutability": "mutable",
+                        "name": "",
+                        "nameLocation": "-1:-1:-1",
+                        "nodeType": "VariableDeclaration",
+                        "scope": 40,
+                        "src": "2018:7:0",
+                        "stateVariable": false,
+                        "storageLocation": "default",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        },
+                        "typeName": {
+                          "id": 36,
+                          "name": "bytes32",
+                          "nodeType": "ElementaryTypeName",
+                          "src": "2018:7:0",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        },
+                        "visibility": "internal"
+                      }
+                    ],
+                    "src": "2017:9:0"
+                  },
+                  "returnParameters": {
+                    "id": 39,
+                    "nodeType": "ParameterList",
+                    "parameters": [],
+                    "src": "2035:0:0"
+                  },
+                  "scope": 55,
+                  "src": "2002:34:0",
+                  "stateMutability": "nonpayable",
+                  "virtual": false,
+                  "visibility": "external"
+                },
+                {
+                  "documentation": {
+                    "id": 41,
+                    "nodeType": "StructuredDocumentation",
+                    "src": "2042:436:0",
+                    "text": "A connection can be disputed if the caller pays the Chainlink network to audit it.\n  Cases include:\n   - An account is banned\n   - An account removes their verification post\n   - An account's name has changed\n @param (1) the account ID, username, or unique identifier that is being disputed\n @notice check your registry's implementation to understand what kind of data to pass as parameters"
+                  },
+                  "functionSelector": "add98c70",
+                  "id": 46,
+                  "implemented": false,
+                  "kind": "function",
+                  "modifiers": [],
+                  "name": "dispute",
+                  "nameLocation": "2492:7:0",
+                  "nodeType": "FunctionDefinition",
+                  "parameters": {
+                    "id": 44,
+                    "nodeType": "ParameterList",
+                    "parameters": [
+                      {
+                        "constant": false,
+                        "id": 43,
+                        "mutability": "mutable",
+                        "name": "",
+                        "nameLocation": "-1:-1:-1",
+                        "nodeType": "VariableDeclaration",
+                        "scope": 46,
+                        "src": "2500:7:0",
+                        "stateVariable": false,
+                        "storageLocation": "default",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        },
+                        "typeName": {
+                          "id": 42,
+                          "name": "bytes32",
+                          "nodeType": "ElementaryTypeName",
+                          "src": "2500:7:0",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        },
+                        "visibility": "internal"
+                      }
+                    ],
+                    "src": "2499:9:0"
+                  },
+                  "returnParameters": {
+                    "id": 45,
+                    "nodeType": "ParameterList",
+                    "parameters": [],
+                    "src": "2517:0:0"
+                  },
+                  "scope": 55,
+                  "src": "2483:35:0",
+                  "stateMutability": "nonpayable",
+                  "virtual": false,
+                  "visibility": "external"
+                },
+                {
+                  "documentation": {
+                    "id": 47,
+                    "nodeType": "StructuredDocumentation",
+                    "src": "2524:173:0",
+                    "text": "Resolves a record to a wallet (or contract) address\n @param (1) the identifier to verify\n  Examples include:\n   - The username of a verified account"
+                  },
+                  "functionSelector": "5c23bdf5",
+                  "id": 54,
+                  "implemented": false,
+                  "kind": "function",
+                  "modifiers": [],
+                  "name": "resolve",
+                  "nameLocation": "2711:7:0",
+                  "nodeType": "FunctionDefinition",
+                  "parameters": {
+                    "id": 50,
+                    "nodeType": "ParameterList",
+                    "parameters": [
+                      {
+                        "constant": false,
+                        "id": 49,
+                        "mutability": "mutable",
+                        "name": "",
+                        "nameLocation": "-1:-1:-1",
+                        "nodeType": "VariableDeclaration",
+                        "scope": 54,
+                        "src": "2719:7:0",
+                        "stateVariable": false,
+                        "storageLocation": "default",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        },
+                        "typeName": {
+                          "id": 48,
+                          "name": "bytes32",
+                          "nodeType": "ElementaryTypeName",
+                          "src": "2719:7:0",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        },
+                        "visibility": "internal"
+                      }
+                    ],
+                    "src": "2718:9:0"
+                  },
+                  "returnParameters": {
+                    "id": 53,
+                    "nodeType": "ParameterList",
+                    "parameters": [
+                      {
+                        "constant": false,
+                        "id": 52,
+                        "mutability": "mutable",
+                        "name": "",
+                        "nameLocation": "-1:-1:-1",
+                        "nodeType": "VariableDeclaration",
+                        "scope": 54,
+                        "src": "2751:7:0",
+                        "stateVariable": false,
+                        "storageLocation": "default",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        },
+                        "typeName": {
+                          "id": 51,
+                          "name": "address",
+                          "nodeType": "ElementaryTypeName",
+                          "src": "2751:7:0",
+                          "stateMutability": "nonpayable",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_address",
+                            "typeString": "address"
+                          }
+                        },
+                        "visibility": "internal"
+                      }
+                    ],
+                    "src": "2750:9:0"
+                  },
+                  "scope": 55,
+                  "src": "2702:58:0",
+                  "stateMutability": "view",
+                  "virtual": false,
+                  "visibility": "external"
+                }
+              ],
+              "scope": 56,
+              "src": "142:2620:0",
+              "usedErrors": []
+            }
+          ],
+          "src": "36:2727:0"
+        },
+        "id": 0
+      }
+    }
+  }
+}
