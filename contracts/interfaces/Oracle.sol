@@ -5,6 +5,7 @@ pragma solidity ^0.8.0;
 /// @author hexcowboy <cowboy.dev>
 interface Oracle {
     error ErrorOracleFeeTooLow();
+    error BatchParamLengthNotMatching();
 
     /// Logged when an account has requested verification
     /// @param resolver - the oracle that resolved the account
@@ -24,6 +25,13 @@ interface Oracle {
     ///   - Twitter: The @ username of the owner
     /// @param owner - the address which was verified for the object
     function verify(bytes32 proof, address owner) external;
+
+    /// Verifies an object, usually updating records in a Registry contract
+    /// @param (1) - the object to be verified
+    ///  Examples include:
+    ///   - Twitter: The @ username of the owner
+    /// @param owners - the address which was verified for the object
+    function batchVerify(bytes32[] memory, address[] memory owners) external;
 
     /// Sets the price in wei for a verification job
     /// @param priceInWei - the desired price in wei
