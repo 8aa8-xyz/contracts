@@ -1,11 +1,9 @@
 import "@nomiclabs/hardhat-ethers";
-import hh, { ethers } from "hardhat";
-import { getChainlinkTokenAddress } from "../utils/chainlink";
+import { ethers } from "hardhat";
 
 async function main() {
-  const linkAddress = getChainlinkTokenAddress(hh.network.config.chainId);
   const Twitter = await ethers.getContractFactory("Twitter");
-  const twitter = await Twitter.deploy(linkAddress);
+  const twitter = await Twitter.deploy();
 
   await twitter.deployed();
 
