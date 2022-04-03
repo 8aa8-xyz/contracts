@@ -8,7 +8,7 @@ Create a virtual environment (requires `python3`, recommended `v3.9+`)
 
 ```bash
 python3 -m venv venv
-source env/bin/activate
+source venv/bin/activate
 ```
 
 Installing dependencies (requires `xargs` - `brew install xargs` or `apt install -y xargs`)
