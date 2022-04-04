@@ -2,7 +2,7 @@
 
 ## Deployments
 
-> Rinkeby: `0x08cA8433077C8a96De4c72Fc4970A87140A78ea9`
+> Rinkeby: [`0x08cA8433077C8a96De4c72Fc4970A87140A78ea9`](https://rinkeby.etherscan.io/address/0x08ca8433077c8a96de4c72fc4970a87140a78ea9#code)
 
 ## Development
 
