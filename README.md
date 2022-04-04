@@ -42,7 +42,7 @@ yarn global add ganache  # yarn (fun)
 ```bash
 brownie test     # run tests as normal
 brownie test -G  # show gas reports
-````
+```
 
 ### 🚀 Deploy Contracts
 
@@ -74,3 +74,4 @@ Transaction sent: 0x7c743fb832f791fc733d573a8e21493e88aab51559351169ba368c21d125
   Twitter.constructor confirmed   Block: 10443228   Gas used: 506259 (90.91%)
   Twitter deployed at: 0x08cA8433077C8a96De4c72Fc4970A87140A78ea9
 ```
+````
