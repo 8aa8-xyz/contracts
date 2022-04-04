@@ -6,7 +6,7 @@
 
 ## Development
 
-### Creating Environment
+### 🏜 Creating Environment
 
 Create a virtual environment (requires `python3`, recommended `v3.9+`)
 
@@ -22,19 +22,29 @@ pip install --upgrade pip
 cat requirements.txt | xargs pip install
 ```
 
-### Compile Solidity Contracts
+### 🛠 Compile Solidity Contracts
 
 ```bash
 brownie compile
 ```
 
-### Run tests
+### 🧪 Run tests
 
-```bash
-brownie test
+#### Install ganache
+
+````bash
+npm install -g ganace    # npm (boring)
+yarn global add ganache  # yarn (fun)
 ```
 
-### Deploy Contracts
+#### Run
+
+```bash
+brownie test     # run tests as normal
+brownie test -G  # show gas reports
+````
+
+### 🚀 Deploy Contracts
 
 #### Make a Brownie account
 
