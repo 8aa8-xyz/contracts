@@ -27,10 +27,12 @@ interface Oracle {
     function verify(bytes32 proof, address owner) external;
 
     /// Verifies an object, usually updating records in a Registry contract
-    /// @param (1) - the object to be verified
+    /// @notice - the array agrument lengths must match
+    /// @notice - the array elements must correspend to the same index
+    /// @param (1) - the objects to be verified
     ///  Examples include:
     ///   - Twitter: The @ username of the owner
-    /// @param owners - the address which was verified for the object
+    /// @param owners - the addresses which were verified for the objects
     function batchVerify(bytes32[] memory, address[] memory owners) external;
 
     /// Sets the price in wei for a verification job

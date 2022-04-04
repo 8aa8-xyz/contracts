@@ -36,7 +36,7 @@ interface Registry {
     /// @param resolver - the address of the resolver oracle
     /// @param (2) - the account ID, username, or unique identifier that is being disputed
     /// @notice check your registry's implementation to understand what kind of data to pass as parameters
-    function dispute(address resolver, bytes32) external;
+    function dispute(address resolver, bytes32) external payable;
 
     /// Resolves a record to a wallet (or contract) address
     /// @param resolver - the address of the resolver oracle

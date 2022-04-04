@@ -1,3 +1,6 @@
 cython
 cytoolz
 eth-brownie
+
+rich
+isort

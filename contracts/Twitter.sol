@@ -14,8 +14,12 @@ contract Twitter is Registry, Oracle {
     /// Submits a payment to an oracle to run a verification job
     /// @param resolver - the address of the oracle
     /// @param tweetId - bytes32 encoded unique tweet ID that contains a proof
-    function submit(address resolver, bytes32 tweetId) external payable {
-        if (msg.value <= oraclePrices[resolver]) revert ErrorOracleFeeTooLow();
+    function submit(address resolver, bytes32 tweetId)
+        external
+        payable
+        virtual
+    {
+        if (msg.value < oraclePrices[resolver]) revert ErrorOracleFeeTooLow();
         payable(resolver).transfer(msg.value);
         emit SubmitProof(resolver, tweetId, msg.sender);
     }
@@ -23,7 +27,13 @@ contract Twitter is Registry, Oracle {
     /// Submit a dispute for a Twitter handle
     /// @param resolver - the address of the Oracle that resolved the Twitter handle
     /// @param twitterHandle - the Twitter @ username to dispute
-    function dispute(address resolver, bytes32 twitterHandle) external virtual {
+    function dispute(address resolver, bytes32 twitterHandle)
+        external
+        payable
+        virtual
+    {
+        if (msg.value < oraclePrices[resolver]) revert ErrorOracleFeeTooLow();
+        payable(resolver).transfer(msg.value);
         emit SubmitDispute(resolver, twitterHandle);
     }
 
@@ -40,10 +50,13 @@ contract Twitter is Registry, Oracle {
         return records[resolver][twitterHandle];
     }
 
+    /// Called by the oracle after it verifies multiple tweets
+    /// @param twitterHandles - the Twitter handles to be verified
+    /// @param owners - the addresses which were verified for the handles
     function batchVerify(
         bytes32[] memory twitterHandles,
         address[] memory owners
-    ) external {
+    ) external virtual {
         if (twitterHandles.length != owners.length)
             revert BatchParamLengthNotMatching();
         unchecked {
@@ -59,13 +72,13 @@ contract Twitter is Registry, Oracle {
     /// Called by the oracle after it verifies a tweet
     /// @param twitterHandle - the Twitter @ username to verify
     /// @param owner - the address the Twitter handle belongs to (or 0x0 if none)
-    function verify(bytes32 twitterHandle, address owner) external {
+    function verify(bytes32 twitterHandle, address owner) external virtual {
         records[msg.sender][twitterHandle] = owner;
         emit Verified(msg.sender, owner, twitterHandle);
     }
 
     /// Called by the oracle to set the price of a verification job
-    function setOraclePrice(uint256 priceInWei) external {
+    function setOraclePrice(uint256 priceInWei) external virtual {
         oraclePrices[msg.sender] = priceInWei;
     }
 }
