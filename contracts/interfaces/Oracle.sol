@@ -7,6 +7,10 @@ interface Oracle {
     error ErrorOracleFeeTooLow();
     error BatchParamLengthNotMatching();
 
+    /// Sets the price in wei for a verification job
+    /// @param priceInWei - the desired price in wei
+    function setOraclePrice(uint256 priceInWei) external;
+
     /// Verifies an object, usually updating records in a Registry contract
     /// @param proof - the object to be verified
     ///  Examples include:
@@ -22,8 +26,4 @@ interface Oracle {
     ///   - Twitter: The @ username of the owner
     /// @param owners - the addresses which were verified for the objects
     function batchVerify(bytes32[] memory, address[] memory owners) external;
-
-    /// Sets the price in wei for a verification job
-    /// @param priceInWei - the desired price in wei
-    function setOraclePrice(uint256 priceInWei) external;
 }

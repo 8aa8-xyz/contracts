@@ -50,6 +50,12 @@ contract Twitter is Registry, Oracle {
         return records[resolver][twitterHandle];
     }
 
+    /// Called by the oracle to set the price of a verification job
+    /// @param priceInWei - the minimum price the oracle will accept (in wei, not ether or gwei)
+    function setOraclePrice(uint256 priceInWei) external virtual {
+        oraclePrices[msg.sender] = priceInWei;
+    }
+
     /// Called by the oracle after it verifies a tweet
     /// @param twitterHandle - the Twitter @ username to verify
     /// @param owner - the address the Twitter handle belongs to (or 0x0 if none)
@@ -75,11 +81,5 @@ contract Twitter is Registry, Oracle {
                 index++;
             } while (index != twitterHandles.length);
         }
-    }
-
-    /// Called by the oracle to set the price of a verification job
-    /// @param priceInWei - the minimum price the oracle will accept (in wei, not ether or gwei)
-    function setOraclePrice(uint256 priceInWei) external virtual {
-        oraclePrices[msg.sender] = priceInWei;
     }
 }
