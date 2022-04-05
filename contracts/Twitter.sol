@@ -21,7 +21,7 @@ contract Twitter is Registry, Oracle {
     {
         if (msg.value < oraclePrices[resolver]) revert ErrorOracleFeeTooLow();
         payable(resolver).transfer(msg.value);
-        emit SubmitProof(resolver, tweetId, msg.sender);
+        emit SubmitProof(resolver, tweetId);
     }
 
     /// Submit a dispute for a Twitter handle

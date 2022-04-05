@@ -7,12 +7,7 @@ interface Registry {
     /// Logged when an account has requested verification
     /// @param oracle - the address of the resolver oracle
     /// @param proof - the unique identifier to prove
-    /// @param requester - the address which submitted the proof
-    event SubmitProof(
-        address indexed oracle,
-        bytes32 indexed proof,
-        address indexed requester
-    );
+    event SubmitProof(address indexed oracle, bytes32 indexed proof);
 
     /// Logged when someone disputes the ownership of an address's connected account
     /// @param owner the address of the owner being disputed
@@ -22,7 +17,7 @@ interface Registry {
     /// Logged when a resolver has verified an account
     /// @param resolver - the oracle that resolved the account
     /// @param owner - the address of the owner that was verified
-    /// @param (2) the identity that was linked to the owner
+    /// @param (3) the identity that was linked to the owner
     ///  Examples include:
     ///   - Twitter: The @ username of the owner
     event Verified(
