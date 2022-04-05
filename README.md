@@ -68,7 +68,7 @@ ETHERSCAN_TOKEN=...         # required
 brownie run scripts/deploy.py deploy deployer_account --network rinkeby  # change network if needed
 
 Running 'scripts/deploy.py::deploy'...
-Enter password for "deployer":
+Enter password for "deployer_account":
 Transaction sent: 0x7c743fb832f791fc733d573a8e21493e88aab51559351169ba368c21d125bbc3
   Gas price: 1.158080953 gwei   Gas limit: 556884   Nonce: 696
   Twitter.constructor confirmed   Block: 10443228   Gas used: 506259 (90.91%)

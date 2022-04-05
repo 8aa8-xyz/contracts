@@ -78,6 +78,7 @@ contract Twitter is Registry, Oracle {
     }
 
     /// Called by the oracle to set the price of a verification job
+    /// @param priceInWei - the minimum price the oracle will accept (in wei, not ether or gwei)
     function setOraclePrice(uint256 priceInWei) external virtual {
         oraclePrices[msg.sender] = priceInWei;
     }
