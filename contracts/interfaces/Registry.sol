@@ -19,6 +19,18 @@ interface Registry {
     /// @param (2) - the account ID, username, or unique identifier of the account being disputed
     event SubmitDispute(address indexed owner, bytes32 indexed);
 
+    /// Logged when a resolver has verified an account
+    /// @param resolver - the oracle that resolved the account
+    /// @param owner - the address of the owner that was verified
+    /// @param (2) the identity that was linked to the owner
+    ///  Examples include:
+    ///   - Twitter: The @ username of the owner
+    event Verified(
+        address indexed resolver,
+        address indexed owner,
+        bytes32 indexed
+    );
+
     /// Given data, an oracle should be able to use it to verify an external account
     /// @param resolver - the address of the resolver oracle
     /// @param proof - the object data to verify

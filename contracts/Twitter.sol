@@ -50,6 +50,14 @@ contract Twitter is Registry, Oracle {
         return records[resolver][twitterHandle];
     }
 
+    /// Called by the oracle after it verifies a tweet
+    /// @param twitterHandle - the Twitter @ username to verify
+    /// @param owner - the address the Twitter handle belongs to (or 0x0 if none)
+    function verify(bytes32 twitterHandle, address owner) external virtual {
+        records[msg.sender][twitterHandle] = owner;
+        emit Verified(msg.sender, owner, twitterHandle);
+    }
+
     /// Called by the oracle after it verifies multiple tweets
     /// @param twitterHandles - the Twitter handles to be verified
     /// @param owners - the addresses which were verified for the handles
@@ -67,14 +75,6 @@ contract Twitter is Registry, Oracle {
                 index++;
             } while (index != twitterHandles.length);
         }
-    }
-
-    /// Called by the oracle after it verifies a tweet
-    /// @param twitterHandle - the Twitter @ username to verify
-    /// @param owner - the address the Twitter handle belongs to (or 0x0 if none)
-    function verify(bytes32 twitterHandle, address owner) external virtual {
-        records[msg.sender][twitterHandle] = owner;
-        emit Verified(msg.sender, owner, twitterHandle);
     }
 
     /// Called by the oracle to set the price of a verification job
