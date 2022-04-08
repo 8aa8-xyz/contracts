@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: CC-PDDC
 pragma solidity ^0.8.13;
 
-import "./interfaces/Registry.sol";
 import "./interfaces/Oracle.sol";
 
-contract Twitter is Registry, Oracle {
+contract Twitter is Oracle {
     // Mapping of resolver to Twitter handle to wallet address
     mapping(address => mapping(bytes32 => address)) private records;
 
